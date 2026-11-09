@@ -1,8 +1,8 @@
-import { loadSave } from "../config.js";
+import { muatSimpanan } from "../config.js";
 export default class MultiplayerScene extends Phaser.Scene {
   constructor(){super("MultiplayerScene");}
   create(){
-    this.saveData=loadSave();this.mode="";this.roomCode="";this.cameras.main.setBackgroundColor("#142d42");
+    this.saveData=muatSimpanan();this.mode="";this.roomCode="";this.cameras.main.setBackgroundColor("#142d42");
     const g=this.add.graphics();g.fillStyle(0x193b52).fillRect(0,0,960,540);g.fillStyle(0x28536b).fillRect(0,380,960,160);
     for(let i=0;i<12;i++){g.fillStyle(i%2?0x386b70:0x315d69).fillRect(i*90,300-(i%3)*35,65,90);g.fillStyle(0x9d7254).fillTriangle(i*90-8,300-(i%3)*35,i*90+32,260-(i%3)*35,i*90+73,300-(i%3)*35);}
     this.add.text(480,48,"PILIH MODE PERMAINAN",{fontFamily:"Nunito",fontSize:"30px",fontStyle:"900",color:"#fff0c4",stroke:"#0c2335",strokeThickness:5}).setOrigin(.5);
