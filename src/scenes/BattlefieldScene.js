@@ -188,7 +188,7 @@ export default class BattlefieldScene extends Phaser.Scene {
 
     const tombolKembali = this.add.rectangle(884, 29, 126, 34, 0x8a493d)
       .setStrokeStyle(2, 0xffdfaa).setInteractive({ useHandCursor: true })
-      .setScrollFactor(0).setDepth(1002).setData("antarmuka", true);
+      .setScrollFactor(0).setDepth(1002);
     this.add.text(884, 29, "KEMBALI", {
       fontFamily: "Nunito", fontSize: "12px", fontStyle: "900", color: "#fff4d4"
     }).setOrigin(0.5).setScrollFactor(0).setDepth(1003);
@@ -202,9 +202,6 @@ export default class BattlefieldScene extends Phaser.Scene {
   pasangKendaliKamera() {
     this.input.on("pointerdown", pointer => {
       if (pointer.y < 60 || pointer.y > 485) return;
-      const sasaran = this.input.hitTestPointer(pointer);
-      if (sasaran.some(objek => objek.getData && objek.getData("antarmuka"))) return;
-
       this.geserKamera = {
         x: pointer.x,
         y: pointer.y,
