@@ -1,4 +1,3 @@
-import { loadSave } from "../config.js";
 export default class SplashScene extends Phaser.Scene {
   constructor(){super("SplashScene");}
   create(){
