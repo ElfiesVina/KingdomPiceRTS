@@ -3,10 +3,11 @@ import SplashScene from "./scenes/SplashScene.js";
 import HomeScene from "./scenes/HomeScene.js";
 import MenuScene from "./scenes/MenuScene.js";
 import MultiplayerScene from "./scenes/MultiplayerScene.js";
+import BattlefieldScene from "./scenes/BattlefieldScene.js";
 
 const permainan = new Phaser.Game({
   ...KONFIGURASI_PERMAINAN,
-  scene: [SplashScene, HomeScene, MenuScene, MultiplayerScene]
+  scene: [SplashScene, HomeScene, MenuScene, MultiplayerScene, BattlefieldScene]
 });
 
 // Antarmuka global ini dipertahankan sementara agar alat debug prototipe lama tetap kompatibel.
