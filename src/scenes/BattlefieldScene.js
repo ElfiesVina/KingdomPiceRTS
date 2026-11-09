@@ -5,6 +5,9 @@ export default class BattlefieldScene extends Phaser.Scene {
     this.unitTerpilih = null;
     this.geserKamera = null;
     this.sedangMenggeser = false;
+    this.sedangMencubit = false;
+    this.jarakAwalCubit = 0;
+    this.zoomAwalCubit = 1;
   }
 
   create(data = {}) {
@@ -194,14 +197,49 @@ export default class BattlefieldScene extends Phaser.Scene {
     }).setOrigin(0.5).setScrollFactor(0).setDepth(1003);
     tombolKembali.on("pointerdown", () => this.scene.start("MenuScene"));
 
-    this.add.text(20, 475, "SERET: GESER PETA   •   RODA: ZOOM", {
+    this.add.text(20, 475, "SERET: GESER PETA   •   CUBIT: ZOOM", {
       fontFamily: "Nunito", fontSize: "10px", fontStyle: "900", color: "#e4f0d6"
     }).setScrollFactor(0).setDepth(1001);
   }
 
   pasangKendaliKamera() {
+    const ambilDuaJari = () => {
+      const jariAktif = this.input.manager.pointers
+        .slice(1)
+        .filter(jari => jari.isDown);
+
+      return jariAktif.length >= 2 ? jariAktif.slice(0, 2) : null;
+    };
+
+    const perbaruiCubit = () => {
+      const duaJari = ambilDuaJari();
+      if (!duaJari) return false;
+
+      const jarak = Phaser.Math.Distance.Between(
+        duaJari[0].x, duaJari[0].y,
+        duaJari[1].x, duaJari[1].y
+      );
+
+      if (!this.sedangMencubit) {
+        this.sedangMencubit = true;
+        this.sedangMenggeser = false;
+        this.geserKamera = null;
+        this.jarakAwalCubit = Math.max(jarak, 1);
+        this.zoomAwalCubit = this.kamera.zoom;
+      } else {
+        const perbandingan = jarak / this.jarakAwalCubit;
+        this.kamera.setZoom(
+          Phaser.Math.Clamp(this.zoomAwalCubit * perbandingan, 0.72, 1.45)
+        );
+      }
+
+      return true;
+    };
+
     this.input.on("pointerdown", pointer => {
-      if (pointer.y < 60 || pointer.y > 485) return;
+      if (perbaruiCubit()) return;
+      if (this.sedangMencubit || pointer.y < 60 || pointer.y > 485) return;
+
       this.geserKamera = {
         x: pointer.x,
         y: pointer.y,
@@ -212,10 +250,13 @@ export default class BattlefieldScene extends Phaser.Scene {
     });
 
     this.input.on("pointermove", pointer => {
-      if (!this.geserKamera || !pointer.isDown) return;
+      if (perbaruiCubit()) return;
+      if (this.sedangMencubit || !this.geserKamera || !pointer.isDown) return;
+
       const bedaX = pointer.x - this.geserKamera.x;
       const bedaY = pointer.y - this.geserKamera.y;
       if (Math.abs(bedaX) + Math.abs(bedaY) > 7) this.sedangMenggeser = true;
+
       if (this.sedangMenggeser) {
         this.kamera.scrollX = this.geserKamera.scrollX - bedaX / this.kamera.zoom;
         this.kamera.scrollY = this.geserKamera.scrollY - bedaY / this.kamera.zoom;
@@ -223,6 +264,17 @@ export default class BattlefieldScene extends Phaser.Scene {
     });
 
     this.input.on("pointerup", pointer => {
+      if (this.sedangMencubit) {
+        const duaJariMasihAktif = ambilDuaJari();
+        if (!duaJariMasihAktif) {
+          this.sedangMencubit = false;
+          this.jarakAwalCubit = 0;
+        }
+        this.geserKamera = null;
+        this.sedangMenggeser = false;
+        return;
+      }
+
       if (!this.geserKamera) return;
       const digeser = this.sedangMenggeser;
       this.geserKamera = null;
