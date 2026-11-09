@@ -1,8 +1,8 @@
-import { loadSave, saveGame } from "../config.js";
+import { muatSimpanan, simpanPermainan } from "../config.js";
 export default class MenuScene extends Phaser.Scene {
   constructor(){super("MenuScene");}
   create(){
-    this.saveData=loadSave();this.cameras.main.setBackgroundColor("#8bcfe0");const g=this.add.graphics();
+    this.saveData=muatSimpanan();this.cameras.main.setBackgroundColor("#8bcfe0");const g=this.add.graphics();
     g.fillStyle(0xa7e0e9).fillRect(0,0,960,540);g.fillStyle(0xffe4a0).fillCircle(810,75,35);g.fillStyle(0x5c876e).fillRect(0,310,960,230);
     for(let i=0;i<7;i++){let x=i*150-10;g.fillStyle(0x71947b).fillRect(x,190,110,150);g.fillStyle(0xc27a59).fillTriangle(x-12,190,x+55,130,x+122,190);g.fillStyle(0xffd58b).fillRect(x+22,225,18,25);}
     g.fillStyle(0xc4b27c).fillRect(0,410,960,38);
@@ -25,6 +25,6 @@ export default class MenuScene extends Phaser.Scene {
   }
   makeButton(x,y,label,fn,w=190,h=48,color=0x28658e,size=16){const b=this.add.rectangle(x,y,w,h,color).setStrokeStyle(3,0xd7efff).setInteractive({useHandCursor:true});this.add.text(x,y,label,{fontFamily:"Nunito",fontSize:`${size}px`,fontStyle:"900",color:"#fff4d1",align:"center",wordWrap:{width:w-16}}).setOrigin(.5);b.on("pointerdown",fn);b.on("pointerover",()=>b.setAlpha(.82));b.on("pointerout",()=>b.setAlpha(1));}
   info(title,body){this.modal(title,`<p>${body}</p><button class="action" id="close-info">Kembali</button>`);document.querySelector("#close-info").onclick=()=>document.querySelector("#dom-modal").classList.add("hidden");}
-  settings(){const s=this.saveData.settings;this.modal("SETTINGS",`<button class="action" id="music">Musik: ${s.music?"ON":"OFF"}</button><button class="action" id="sound">Suara: ${s.sound?"ON":"OFF"}</button><label>Grafik</label><select id="graphics"><option ${s.graphics==="Low"?"selected":""}>Low</option><option ${s.graphics==="Medium"?"selected":""}>Medium</option><option ${s.graphics==="High"?"selected":""}>High</option></select>`);document.querySelector("#music").onclick=()=>{s.music=!s.music;saveGame(this.saveData);this.settings();};document.querySelector("#sound").onclick=()=>{s.sound=!s.sound;saveGame(this.saveData);this.settings();};document.querySelector("#graphics").onchange=e=>{s.graphics=e.target.value;saveGame(this.saveData);this.settings();};}
+  settings(){const s=this.saveData.settings;this.modal("SETTINGS",`<button class="action" id="music">Musik: ${s.music?"ON":"OFF"}</button><button class="action" id="sound">Suara: ${s.sound?"ON":"OFF"}</button><label>Grafik</label><select id="graphics"><option ${s.graphics==="Low"?"selected":""}>Low</option><option ${s.graphics==="Medium"?"selected":""}>Medium</option><option ${s.graphics==="High"?"selected":""}>High</option></select>`);document.querySelector("#music").onclick=()=>{s.music=!s.music;simpanPermainan(this.saveData);this.settings();};document.querySelector("#sound").onclick=()=>{s.sound=!s.sound;simpanPermainan(this.saveData);this.settings();};document.querySelector("#graphics").onchange=e=>{s.graphics=e.target.value;simpanPermainan(this.saveData);this.settings();};}
   modal(title,html){const m=document.querySelector("#dom-modal");document.querySelector("#modal-title").textContent=title;document.querySelector("#modal-content").innerHTML=html;m.classList.remove("hidden");document.querySelector("#modal-close").onclick=()=>m.classList.add("hidden");}
 }
