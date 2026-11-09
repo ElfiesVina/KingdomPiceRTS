@@ -1,0 +1,17 @@
+# Pengaturan lokal editor
+.vscode/
+.idea/
+
+# Dependensi dan hasil build
+node_modules/
+dist/
+build/
+coverage/
+
+# Berkas sistem operasi
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Log
+*.log
