@@ -11,7 +11,8 @@
 <body>
   <main id="game-shell">
     <div id="game"></div>
-    <div id="rotate-hint" aria-live="polite">Putar HP untuk pengalaman terbaik. Portrait tetap didukung.</div>
+    <button id="fullscreen-toggle" type="button" aria-label="Aktifkan layar penuh">⛶ LAYAR PENUH</button>
+    <div id="rotate-hint" aria-live="polite">Kingdom Pixel RTS hanya dapat dimainkan dalam posisi landscape. Putar HP ke posisi horizontal.</div>
     <div id="dom-modal" class="modal hidden" role="dialog" aria-modal="true">
       <section class="modal-card">
         <button id="modal-close" class="modal-close" aria-label="Tutup">×</button>
@@ -22,5 +23,30 @@
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js" crossorigin="anonymous"></script>
   <script type="module" src="src/main.js"></script>
+  <script>
+    (() => {
+      const tombol = document.getElementById("fullscreen-toggle");
+      const perbaruiTombol = () => {
+        tombol.hidden = Boolean(document.fullscreenElement);
+        tombol.textContent = "⛶ LAYAR PENUH";
+      };
+
+      tombol.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen();
+            if (screen.orientation && screen.orientation.lock) {
+              try { await screen.orientation.lock("landscape"); } catch (_) {}
+            }
+          }
+        } catch (kesalahan) {
+          console.warn("Mode layar penuh tidak tersedia pada browser ini:", kesalahan);
+        }
+        perbaruiTombol();
+      });
+
+      document.addEventListener("fullscreenchange", perbaruiTombol);
+    })();
+  </script>
 </body>
 </html>
