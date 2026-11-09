@@ -16,8 +16,8 @@ export default class BattlefieldScene extends Phaser.Scene {
     this.gambarPeta();
     this.buatLingkungan();
     this.buatBangunan();
-    this.buatPasukan();
     this.buatAntarmuka();
+    this.buatPasukan();
     this.pasangKendaliKamera();
     this.kamera.centerOn(1080, 500);
   }
