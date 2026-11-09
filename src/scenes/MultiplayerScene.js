@@ -13,7 +13,15 @@ export default class MultiplayerScene extends Phaser.Scene {
     this.add.text(480,515,"LAN sungguhan membutuhkan host WebSocket lokal; GitHub Pages hanya menyajikan file statis.",{fontFamily:"Nunito",fontSize:"11px",color:"#b9d1df",align:"center"}).setOrigin(.5);
   }
   card(x,y,title,sub,fn,color){this.add.rectangle(x,y,290,190,0x0d2435,.55).setStrokeStyle(2,0x8ebbd0);const b=this.add.rectangle(x,y-10,250,105,color).setStrokeStyle(3,0xe0f2fa).setInteractive({useHandCursor:true});this.add.text(x,y-22,title,{fontFamily:"Nunito",fontSize:"22px",fontStyle:"900",color:"#fff4d1"}).setOrigin(.5);this.add.text(x,y+15,sub,{fontFamily:"Nunito",fontSize:"12px",fontStyle:"800",color:"#ffffff"}).setOrigin(.5);b.on("pointerdown",fn);b.on("pointerover",()=>b.setAlpha(.8));b.on("pointerout",()=>b.setAlpha(1));}
-  chooseSingle(){this.mode="single";this.modal("SINGLE PLAYER",`<p>Pilih tingkat kesulitan untuk pertempuran melawan AI.</p><select id="difficulty"><option>Easy</option><option selected>Normal</option><option>Hard</option></select><button class="action" id="start-ai">MULAI PERSIAPAN BATTLE</button>`);document.querySelector("#start-ai").onclick=()=>{const d=document.querySelector("#difficulty").value;this.modal("MODE SIAP",`<p>Mode Single Player dipilih dengan tingkat kesulitan <b>${d}</b>.</p><p>Arena RTS akan dibangun pada Tahap 3. Pertempuran belum dimulai pada Tahap 1.</p><button class="action" id="back-menu">KEMBALI KE MENU</button>`);document.querySelector("#back-menu").onclick=()=>{this.closeModal();this.scene.start("MenuScene");};};}
+  chooseSingle(){
+    this.mode="single";
+    this.modal("SINGLE PLAYER",`<p>Pilih tingkat kesulitan untuk arena latihan melawan simulasi lawan.</p><select id="difficulty"><option value="Mudah">Mudah</option><option value="Normal" selected>Normal</option><option value="Sulit">Sulit</option></select><button class="action" id="start-ai">MASUK ARENA LATIHAN</button>`);
+    document.querySelector("#start-ai").onclick=()=>{
+      const tingkat=document.querySelector("#difficulty").value;
+      this.closeModal();
+      this.scene.start("BattlefieldScene",{difficulty:tingkat});
+    };
+  }
   showLan(){this.modal("MULTIPLAYER LAN",`<p><b>Catatan jaringan:</b> GitHub Pages tidak dapat membuka port lokal sebagai host. Layar ini menyiapkan alur room; sinkronisasi antardevice memerlukan local WebSocket bridge.</p><button class="action" id="create-room">BUAT ROOM (HOST)</button><label>Kode Room / IP Host</label><input id="room-input" maxlength="32" placeholder="Contoh: 4821 atau 192.168.1.5:8080"><button class="action" id="join-room">JOIN ROOM (CLIENT)</button>`);document.querySelector("#create-room").onclick=()=>this.createRoom();document.querySelector("#join-room").onclick=()=>this.joinRoom();}
   createRoom(){this.roomCode=String(Math.floor(1000+Math.random()*9000));this.roomLobby(true,`Room ${this.roomCode}`);}
   joinRoom(){const value=document.querySelector("#room-input").value.trim();if(!value){this.toast("Masukkan kode room atau IP host.");return;}if(!/^(\d{4}|(?:\d{1,3}\.){3}\d{1,3}(?::\d{2,5})?)$/.test(value)){this.toast("Format kode room/IP belum sesuai.");return;}this.roomCode=value;this.roomLobby(false,`Room ${value}`);}
