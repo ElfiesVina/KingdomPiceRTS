@@ -45,7 +45,7 @@ Membangun satu arena kecil yang sudah dapat disentuh dan dimainkan, sebelum mena
 - Perilaku di Android landscape perlu diuji terpisah sebelum tahap ini dinyatakan lulus.
 
 ## Catatan sinkronisasi GitHub dan VS Code
-GitHub adalah remote repository, sedangkan folder VS Code adalah salinan lokal. Sinkronisasi dilakukan menggunakan Git, bukan kode runtime game:
+GitHub adalah remote repository, sedangkan folder VS Code adalah salinan lokal. Sinkronisasi dilakukan menggunakan Git, bukan kode runtime game. Skrip PowerShell `tools/sinkronkan-vscode.ps1` disediakan untuk mengambil branch kerja ini dengan aman. Jalankan dari terminal PowerShell di dalam repository menggunakan `powershell -ExecutionPolicy Bypass -File .\\tools\\sinkronkan-vscode.ps1`. Skrip akan menolak berjalan jika ada perubahan file yang sudah dilacak tetapi belum di-commit, lalu mengambil branch ini dan melakukan fast-forward pull. Folder `.vscode/` diabaikan oleh `.gitignore` karena pengaturan editor biasanya khusus komputer masing-masing.
 - `git fetch origin` mengambil informasi commit terbaru.
 - `git switch --track origin/up/phase-1-vertical-slice` membuat branch lokal yang melacak branch GitHub.
 - `git pull` mengambil dan menggabungkan commit terbaru ke branch lokal.
