@@ -13,7 +13,7 @@ Membangun satu arena kecil yang sudah dapat disentuh dan dimainkan, sebelum mena
 - Unit dapat dipilih dengan klik atau ketukan.
 - Unit terpilih dapat diperintahkan bergerak dengan klik atau ketukan pada area peta.
 - Kamera dapat digeser dengan menyeret peta.
-- Zoom kamera tersedia melalui roda mouse.
+- Zoom kamera tersedia melalui roda mouse dan gestur cubit dua jari pada layar sentuh.
 - Mode Single Player pada layar Multiplayer diarahkan ke arena latihan.
 - Tombol kembali membawa pemain ke menu.
 
@@ -23,7 +23,7 @@ Membangun satu arena kecil yang sudah dapat disentuh dan dimainkan, sebelum mena
 - Pergerakan unit masih tween langsung menuju titik tujuan; belum ada pathfinding, tabrakan, atau penghindaran rintangan.
 - Belum ada serangan, kesehatan, musuh AI, ekonomi, pembangunan, atau kondisi menang/kalah.
 - Pilihan tingkat kesulitan saat ini hanya ditampilkan sebagai label arena; belum mengubah perilaku lawan.
-- Zoom sentuh dua jari belum dibuat.
+- Zoom sentuh dua jari sudah ditambahkan, tetapi masih perlu diuji langsung pada perangkat Android.
 - Belum diuji di browser laptop maupun perangkat Android pada saat commit.
 
 ## Cara uji lokal
@@ -34,7 +34,8 @@ Membangun satu arena kecil yang sudah dapat disentuh dan dimainkan, sebelum mena
 5. Ketuk salah satu unit sampai lingkaran seleksi terlihat.
 6. Ketuk area rumput atau jalan untuk memerintahkan unit bergerak.
 7. Seret peta untuk menggeser kamera; gunakan roda mouse untuk zoom.
-8. Tekan KEMBALI untuk kembali ke menu.
+8. Cubit dengan dua jari untuk memperbesar atau memperkecil tampilan.
+9. Tekan KEMBALI untuk kembali ke menu.
 
 ## Kriteria penerimaan awal
 - Scene arena dapat dibuka tanpa error JavaScript.
