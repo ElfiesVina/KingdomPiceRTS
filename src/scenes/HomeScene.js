@@ -1,0 +1,35 @@
+import { loadSave, saveGame } from "../config.js";
+export default class HomeScene extends Phaser.Scene {
+  constructor(){super("HomeScene");}
+  create(){
+    this.dataSave=loadSave();this.drawTown();
+    this.add.text(34,24,"KINGDOM PIXEL",{fontFamily:"Nunito",fontSize:"28px",fontStyle:"900",color:"#fff0c4",stroke:"#18364d",strokeThickness:5});
+    this.add.text(36,57,"REAL-TIME STRATEGY",{fontFamily:"Nunito",fontSize:"11px",fontStyle:"900",color:"#e3f5ff"});
+    this.profilePanel();this.hero= this.heroSprite(480,315);
+    this.add.text(480,385,"Alden • Penjaga Kerajaan",{fontFamily:"Nunito",fontSize:"15px",fontStyle:"900",color:"#fff0c4",stroke:"#27465b",strokeThickness:3}).setOrigin(.5);
+    this.makeButton(480,445,"PLAY",()=>this.scene.start("MenuScene"),250,62,0xb87935,25);
+    this.makeButton(130,440,"DAILY REWARD",()=>this.claimDaily(),170,46);
+    this.makeButton(830,440,"SETTINGS",()=>this.settings(),150,46);
+    this.makeButton(830,495,"SHOP",()=>this.shop(),150,38,0x477b68,15);
+    this.makeButton(130,495,"BACKUP / RESTORE",()=>this.backupRestore(),170,38,0x477b68,13);
+    this.add.text(480,520,"Versi Tahap 1 • Progress tersimpan otomatis",{fontFamily:"Nunito",fontSize:"11px",color:"#e8f3e8"}).setOrigin(.5);
+    this.time.addEvent({delay:5000,loop:true,callback:()=>{this.dataSave.player.gold+=2;saveGame(this.dataSave);this.refreshProfile();}});
+    this.time.addEvent({delay:8500,loop:true,callback:()=>this.refreshProfile()});
+  }
+  drawTown(){
+    this.cameras.main.setBackgroundColor("#83c8e1");const g=this.add.graphics();g.fillStyle(0xa8dfed).fillRect(0,0,960,540);g.fillStyle(0xffe7a2).fillCircle(820,80,36);
+    for(let i=0;i<5;i++){const x=50+i*195;g.fillStyle(0xffffff,.85).fillEllipse(x+50,95+(i%2)*40,85,24);g.fillStyle(0x6b927b).fillRect(x,245,145,145);g.fillStyle(0xc47b58).fillTriangle(x-12,245,x+70,175,x+157,245);g.fillStyle(0xffd58b).fillRect(x+20,278,25,34);g.fillStyle(0xffd58b).fillRect(x+92,278,25,34);g.fillStyle(0x765342).fillRect(x+59,320,28,70);}
+    g.fillStyle(0x78ad69).fillRect(0,390,960,150);g.fillStyle(0xc5b17c).fillRect(0,438,960,44);g.fillStyle(0x9b8c63).fillRect(0,456,960,5);
+    for(let i=0;i<8;i++){g.fillStyle(0x4d7c4d).fillRect(30+i*125,390,14,30);g.fillStyle(0x3d754b).fillCircle(37+i*125,378,20);}
+  }
+  profilePanel(){this.profileBg=this.add.rectangle(480,32,330,50,0x17364d,.9).setStrokeStyle(2,0xb8d8e8);this.profileText=this.add.text(480,32,"",{fontFamily:"Nunito",fontSize:"15px",fontStyle:"900",color:"#fff0c4"}).setOrigin(.5);this.refreshProfile();}
+  refreshProfile(){if(!this.profileText)return;const p=this.dataSave.player;this.profileText.setText(`LV ${p.level}   🟡 ${p.gold}   💎 ${p.gems}   ⚡ ${p.energy}`);}
+  heroSprite(x,y){const c=this.add.container(x,y);const r=(xx,yy,w,h,color)=>this.add.rectangle(xx,yy,w,h,color);c.add([r(0,20,32,28,0x356a9a),r(0,-7,27,27,0xf1c19b),r(0,-20,31,11,0x7b4a32),r(-9,22,10,20,0x55403a),r(9,22,10,20,0x55403a),r(-6,-8,4,4,0x253b4c),r(6,-8,4,4,0x253b4c),r(0,6,11,3,0x9c5b53)]);this.tweens.add({targets:c,y:y-7,duration:650,yoyo:true,repeat:-1,ease:"Sine.easeInOut"});return c;}
+  makeButton(x,y,label,fn,w=170,h=44,color=0x28658e,size=16){const bg=this.add.rectangle(x,y,w,h,color).setStrokeStyle(3,0xd5efff).setInteractive({useHandCursor:true});const tx=this.add.text(x,y,label,{fontFamily:"Nunito",fontSize:`${size}px`,fontStyle:"900",color:"#fff4d1"}).setOrigin(.5);bg.on("pointerdown",fn);bg.on("pointerover",()=>bg.setAlpha(.8));bg.on("pointerout",()=>bg.setAlpha(1));return [bg,tx];}
+  claimDaily(){const now=new Date(),today=Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());if(this.dataSave.daily.claimedAt===today){this.notice("Hadiah harian sudah diklaim. Kembali besok!");return;}this.dataSave.daily.claimedAt=today;this.dataSave.daily.streak++;this.dataSave.player.gold+=250;this.dataSave.player.gems+=5;saveGame(this.dataSave);this.refreshProfile();this.notice("Daily Reward diterima!\n+250 Gold • +5 Gems");}
+  settings(){const s=this.dataSave.settings;this.modal("SETTINGS",`<p>Atur kenyamanan bermain. Pengaturan langsung tersimpan.</p><button class="action" id="music">Musik: ${s.music?"ON":"OFF"}</button><button class="action" id="sound">Suara: ${s.sound?"ON":"OFF"}</button><label>Grafik</label><select id="graphics"><option ${s.graphics==="Low"?"selected":""}>Low</option><option ${s.graphics==="Medium"?"selected":""}>Medium</option><option ${s.graphics==="High"?"selected":""}>High</option></select><p>Low direkomendasikan untuk perangkat kelas Snapdragon 628.</p>`);document.querySelector("#music").onclick=()=>{s.music=!s.music;this.settings();};document.querySelector("#sound").onclick=()=>{s.sound=!s.sound;this.settings();};document.querySelector("#graphics").onchange=e=>{s.graphics=e.target.value;saveGame(this.dataSave);this.settings();};saveGame(this.dataSave);}
+  shop(){this.modal("KINGDOM SHOP",`<p>Pedagang kerajaan sedang menyiapkan barang dagangan.</p><button class="action" id="buy">Tukar 10 Gems → 500 Gold</button><p>Saldo: ${this.dataSave.player.gems} Gems</p>`);document.querySelector("#buy").onclick=()=>{if(this.dataSave.player.gems<10){this.notice("Gems tidak cukup.");return;}this.dataSave.player.gems-=10;this.dataSave.player.gold+=500;saveGame(this.dataSave);this.refreshProfile();this.shop();};}
+  backupRestore(){this.modal("BACKUP & RESTORE",`<p>Backup menyimpan salinan progress ke file JSON. Simpan file tersebut di tempat aman.</p><button class="action" id="backup">Download Backup</button><label>Restore dari file JSON</label><input id="restore-file" type="file" accept=".json,application/json"><button class="action" id="restore">Pulihkan Data</button>`);document.querySelector("#backup").onclick=()=>{const blob=new Blob([JSON.stringify(this.dataSave,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="kingdom-pixel-backup.json";a.click();URL.revokeObjectURL(a.href);};document.querySelector("#restore").onclick=async()=>{const f=document.querySelector("#restore-file").files[0];if(!f){this.notice("Pilih file backup terlebih dahulu.");return;}try{const data=JSON.parse(await f.text());if(!data.player||!data.settings)throw Error("Format salah");localStorage.setItem("kingdom_pixel_rts_save_v1",JSON.stringify(data));this.scene.restart();}catch{this.notice("File backup tidak valid.");}};}
+  modal(title,html){const m=document.querySelector("#dom-modal");document.querySelector("#modal-title").textContent=title;document.querySelector("#modal-content").innerHTML=html;m.classList.remove("hidden");document.querySelector("#modal-close").onclick=()=>m.classList.add("hidden");}
+  notice(message){this.modal("INFO",`<p>${message.replace(/\n/g,"<br>")}</p><button class="action" id="ok">OK</button>`);document.querySelector("#ok").onclick=()=>document.querySelector("#dom-modal").classList.add("hidden");}
+}
